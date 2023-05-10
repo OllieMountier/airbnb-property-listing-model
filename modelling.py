@@ -3,6 +3,10 @@ from tabular_data import load_airbnb
 
 from itertools import product
 import numpy as np
+import joblib
+from pathlib import Path
+import json
+import os
 from sklearn.linear_model import SGDRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
@@ -39,34 +43,34 @@ np.random.seed(2)
 #test_rmse = sqrt(mean_squared_error(y_test, y_test_pred))
 #train_rmse = sqrt(mean_squared_error(y_train, y_train_pred))
 
-hyperparameter_dict = {SGDRegressor(): {'learning_rate': ['constant', 'optimal', 'invscaling'], 'loss': ['squared_error', 'huber', 'epsilon_insensitive'], 'penalty': ['l1', 'l2', 'elasticnet'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1], 'max_iter': [5000, 8000, 10000, 15000, 20000]}, 
-                       DecisionTreeRegressor(): {'splitter': ['best', 'random'], 'min_samples_split': [5, 10, 15, 20, 30], 'min_samples_leaf': [5, 10, 15, 20], 'max_leaf_nodes': [None, 20, 40, 60, 80, 100]}, RandomForestRegressor(): {'n_estimators': [50, 100, 200, 400],'min_samples_split': [5, 10, 15],        'min_samples_leaf': [8, 10, 12], 'max_depth': [None, 3, 5, 7]}, GradientBoostingRegressor(): {'loss': ['squared_error', 'absolute_error', 'huber', 'quantile'], 'min_samples_split': [5, 10, 15], 'min_samples_leaf': [8, 12, 16], 'max_depth': [None, 3, 5, 7]}}
+hyperparameter_dict = {SGDRegressor: {'learning_rate': ['constant', 'optimal', 'invscaling'], 'loss':            ['squared_error', 'huber', 'epsilon_insensitive'], 'penalty': ['l1', 'l2', 'elasticnet'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1], 'max_iter': [5000, 8000, 10000, 15000, 20000]}, 
+                       DecisionTreeRegressor: {'splitter': ['best', 'random'], 'min_samples_split': [40, 60, 80, 100], 'min_samples_leaf': [25, 50, 75, 100], 'max_leaf_nodes': [None, 20, 40, 60, 80, 100]}, RandomForestRegressor: {'n_estimators': [50, 100, 200, 400],'min_samples_split': [5, 10, 15],        'min_samples_leaf': [25, 50, 75], 'max_depth': [None, 3, 5, 7]}, GradientBoostingRegressor: {'loss': ['squared_error', 'absolute_error', 'huber', 'quantile'], 'min_samples_split': [75, 100, 125], 'min_samples_leaf': [100, 150, 200], 'max_depth': [None, 3, 5, 7]}}
 
-models = [SGDRegressor(), DecisionTreeRegressor(), RandomForestRegressor(), GradientBoostingRegressor()]
+models = ['SGDRegressor', 'DecisionTreeRegressor', 'RandomForestRegressor', 'GradientBoostingRegressor']
 
-def custom_tune_regression_model_hyperparameters(hyperparameters, model = models, X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test, X_val = X_val, y_val = y_val):
+def custom_tune_regression_model_hyperparameters(hyperparameters, X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test, X_val = X_val, y_val = y_val):
     for h in hyperparameters:
-        keys, values = zip(*hyperparameters[h].items())
-        print(keys, values)
         best_score = -100000
+        keys, values = zip(*hyperparameters[h].items())
         for j in product(*values):
             g = dict(zip(keys, j))
-            test_model = h
-            test_model = test_model.fit(X_train, y_train)
+            
+            test_model = h(**g)
+            test_model.fit(X_train, y_train)
             y_pred = test_model.predict(X_train)
-            score = test_model.score(X_train, y_train)
+            score = test_model.score(X_test, y_test)
             if score > best_score:
                 best_model = test_model
                 best_score = score
                 best_parameters = g
                 rmse = mean_squared_error(y_train, y_pred, squared=False)
-        print('Best score for', best_model, 'is: ', best_score)
-        #print('Best parameters are: ', best_parameters)
-        #print('Best rmse is: ' ,rmse)
+        print(best_model, best_score, best_parameters)
+        
 
-def tune_regression_model_hyperparameters(hyperparameters, model = models, X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test, X_val = X_val, y_val = y_val) :
+def tune_regression_model_hyperparameters(hyperparameters, X_train = X_train, y_train = y_train, X_test = X_test, y_test = y_test, X_val = X_val, y_val = y_val) :
     for h in hyperparameters:
         param_grid = dict(hyperparameters[h].items())
+        h = h()
         gridsearch = GridSearchCV(h, param_grid)
         gridsearch = gridsearch.fit(X_train, y_train)
         best_params = gridsearch.best_params_
@@ -74,39 +78,27 @@ def tune_regression_model_hyperparameters(hyperparameters, model = models, X_tra
         print(h, best_params, accuracy)
 
 
-# def save_model(model, hyperparameters, score, folder='C:/Users/ollie/AiCore/VSCode/Projects/airbnb-property-listing-model/models/regression/'):
-#     filename = 'model.joblib'
-#     file = Path(folder, filename)
-#     joblib.dump(model, file)
-#     with open(Path(folder, 'hyperparameters.json'), 'w') as file2:
-#         json.dump(hyperparameters, file2)
-#     with open(Path(folder, 'metrics.json'), 'w') as file3:
-#         json.dump(score, file3)
+def save_model(modelname, model, hyperparameters, score, folder='C:/Users/ollie/AiCore/VSCode/Projects/airbnb-property-listing-model/models/regression/'):
+    folder = folder
+    direc = modelname
+    path1 = os.path.join(folder, direc)
+    os.makedirs(path1)
+    filename = 'model.joblib'
+    file = Path(path1, filename)
+    joblib.dump(model, file)
+    with open(Path(path1, 'hyperparameters.json'), 'w') as file2:
+        json.dump(hyperparameters, file2)
+    with open(Path(path1, 'metrics.json'), 'w') as file3:
+        json.dump(score, file3)
 
-custom_tune_regression_model_hyperparameters(hyperparameter_dict)
-tune_regression_model_hyperparameters(hyperparameter_dict)
+#custom_tune_regression_model_hyperparameters(hyperparameter_dict)
+#tune_regression_model_hyperparameters(hyperparameter_dict)
 
-#tes = tune_regression_model_hyperparameters()
-#print(tes)
-#save_model(end_model[2], end_model[1], end_model[0])
-
-
+modelfinal = custom_tune_regression_model_hyperparameters(hyperparameter_dict)
+print(modelfinal)
+#save_model(models[0], modelfinal[0], modelfinal[1], modelfinal[2])
 
 
-# param_grid = {'n_estimators': [50, 100, 200, 400],
-#               'min_samples_split': [5, 10, 15], 
-#               'min_samples_leaf': [8, 10, 12], 
-#               'max_depth': [None, 3, 5, 7]}
-
-# param_grid2 = {'loss': ['squared_error', 'absolute_error', 'huber', 'quantile'],
-#                'min_samples_split': [5, 10, 15], 
-#                'min_samples_leaf': [8, 12, 16], 
-#                'max_depth': [None, 3, 5, 7]}
-
-# gridsearch = GridSearchCV(GradientBoostingRegressor(), param_grid).fit(X_train, y_train)
-# best_gs_score = gridsearch.best_score_
-# best_gs_params = gridsearch.best_params_
-# print(best_gs_score, best_gs_params)
 
 
 #%%-
