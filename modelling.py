@@ -33,6 +33,16 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 
 np.random.seed(2)
 
+#modey_test_pred = model.predict(X_test)
+#y_train_pred = model.predict(X_train)
+
+#test_score = r2_score(y_test, y_test_pred)
+#train_score = r2_score(y_train, y_train_pred)
+
+
+#test_rmse = sqrt(mean_squared_error(y_test, y_test_pred))
+#train_rmse = sqrt(mean_squared_error(y_train, y_train_pred))
+
 hyperparameter_dict = {SGDRegressor: {'learning_rate': ['constant', 'optimal', 'invscaling'], 'loss':            ['squared_error', 'huber', 'epsilon_insensitive'], 'penalty': ['l1', 'l2', 'elasticnet'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1], 'max_iter': [5000, 8000, 10000, 15000, 20000]}, 
                        DecisionTreeRegressor: {'splitter': ['best', 'random'], 'min_samples_split': [40, 60, 80, 100], 'min_samples_leaf': [25, 50, 75, 100], 'max_leaf_nodes': [None, 20, 40, 60, 80, 100]}, RandomForestRegressor: {'n_estimators': [50, 100, 200, 400],'min_samples_split': [5, 10, 15],        'min_samples_leaf': [25, 50, 75], 'max_depth': [None, 3, 5, 7]}, GradientBoostingRegressor: {'loss': ['squared_error', 'absolute_error', 'huber', 'quantile'], 'min_samples_split': [75, 100, 125], 'min_samples_leaf': [100, 150, 200], 'max_depth': [None, 3, 5, 7]}}
 
@@ -123,8 +133,8 @@ def find_best_model():
     
 
 if __name__ == '__main__':
-    evaluate_all_models()
-    best_model = find_best_model()
+    #evaluate_all_models()
+    #best_model = find_best_model()
     
     
     
