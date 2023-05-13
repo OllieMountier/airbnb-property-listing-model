@@ -28,9 +28,39 @@ Using this infrastructure I was able to extend on the hyperparameter dictionary 
 The last task was to create a function to decide the best model. This function would load in each model, create predictions and then test its scores. The function would then compare model against model and return the best model and its metrics\parameters.
 ![2023-05-10 (11)](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/482a0096-18d3-4fa2-90d5-fa1c48664dab)
 
-All of this was enclosed in another function called evaluate_all_models which would then be placed in an if __name=='__main' condition. This is so if in future of this project I am required to import this file, the functions won't run multiple times.
+All of this was enclosed in another function called evaluate_all_models which would then be placed in an if __name__=='__main__' condition. This is so if in future of this project I am required to import this file, the functions won't run multiple times.
 
 The best model was the RandomForestRegressor. I believe this to be accurate in my situation as the SGDRegressor can be difficult to make efficient if the various hyperparameters aren't tuned properly. At the time of doing this section in my project I was inexperienced with tuning so I would like to see if I can improve upon this. The other two models-gradient boosting and decision tree are both prone to overfitting. This was an issue for me with all my models due to my tuning being wide and inefficient but particularly so in these two models. 
 
 One thing I would like to go back and alter would be the hyperparameter dictionary. I believe it is rather remedial at this point and I could drasticlly improve on this. Furhter on into this project I will revisit this when i have more experience and understanding. Although I am tweaking it constantly, the changes are currently small and I believe a complete redo could be effective.
 
+Progressing into milestone 5, the main task was to repeat all of the steps of the regression milestone but with classification models instead. Here the first decision was how to go bout this, create a new file and load it into the original or repeat the code in the original file. However, I completely revamped the original file so all functions would intake the model type (classification or regresssion) and produce an output based off the result. This allowed me to save a lot of time and space copying code just for the same output. 
+
+![1-Imports](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/8c205899-4889-417e-bcfd-893814b65b8e)
+These are all the imports used for both the regression and classification models.
+
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/96e894b8-e332-47b0-a307-971ffec40541)
+The function created in my tabular_data.py file to load the dataset in with 'category' as the label
+
+![2-dataset imports](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/bc7e6e21-c7d9-450b-89c4-3730515a62a3)
+This shows the imports of both datasets, one to create a datatset with the 'price_night' as the label and one to include 'price_night in the features and 'category' as the label.
+
+![3- X,y](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/15eb5af6-2ac5-42a4-ac38-d1743a31397f)
+This shows creating X, y for each dataset and creating a train-test split twice to create train/test/validation sets. These are then scaled. I used StandardScaler for both datasets as research suggested this was the most commonly used and best for removing outliers that would negatively affect scores
+
+![5- base model and score](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/a670be0c-0794-4e33-b6e6-f9291c9a3030)
+This shows the the function I used for creating a baseline model for both the regression model- SGDRegressor and classification model- Logistic regression. The function would take the model type as an argument and output the trained model. The next function would then take the returned model in and create the appropriate scores depending on the model type, on both the train and test sets.
+
+![6- custom tune regression](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/9e571915-ad59-4496-af21-65cb13033d13)
+This file shows the updated custom tune function, which now only takes in the original SGDRegressor model and trains it. It is tidied up from the first model in this file as that iterated through all the models, which I believe was not the task. It this returns the best model, its parameters and performance metrics.
+
+![7- gridsearch both models](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/d8618875-be7b-4233-b690-4adc483f52ca)
+These two functions are both models. They iterate over the hyperparameter dictionary I created for eeach model type, perform a gridsearch and create a list of the best model, its parameters and a dictionary of its performance metrics. For both instances, the model's performance is decided by the highest validation score. I then save the models in a folder named after the model type, with each model class having its own folder containing separate files for the model (saved as a joblib file), and JSON files for the hyperparameters and performance metrics. The code to save the model is shown in the picture below.
+![8-save model](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/ec229402-0c8a-4645-bdc1-5fdeb779b8fd)
+![9- find best model](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/55dd0b4a-4dbe-4d7e-b272-56ab00ef1f67)
+The photo above is a function that again can take either model type in as an argument and return the best model class across the board. This is also based off the validation set score.
+![10-eval models if name=main](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/4d42ae48-50fc-4ab3-8b5a-327717afe70f)
+All tuning functions are called in another function called evaluate_all_models before being passed into my if name == main, where the best model function is carried out afterwards.
+
+![4- model dicts](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/8679aa61-0567-4c0a-898e-ba74eaa76c93)
+This picture shows the dictionaries used to tune the models. The choice of these hyperparameters were due to effectiveness these had on the model. From research I was led to believe these are the 'key' hyperparameters and testing more would just lead to overfitting/ not having an effect at all really. Testing these hyperparameters, I didn't experience any 'mis-fitting- issues on my models and all seemed to return an appropriate score. Had this not been the case, I would have experimented more with hyperparameters such as early stopping and 'pruning' on certain model classes.
