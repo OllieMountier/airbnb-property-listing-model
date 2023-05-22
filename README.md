@@ -63,4 +63,22 @@ The photo above is a function that again can take either model type in as an arg
 All tuning functions are called in another function called evaluate_all_models before being passed into my if name == main, where the best model function is carried out afterwards.
 
 ![4- model dicts](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/8679aa61-0567-4c0a-898e-ba74eaa76c93)
-This picture shows the dictionaries used to tune the models. The choice of these hyperparameters were due to effectiveness these had on the model. From research I was led to believe these are the 'key' hyperparameters and testing more would just lead to overfitting/ not having an effect at all really. Testing these hyperparameters, I didn't experience any 'mis-fitting- issues on my models and all seemed to return an appropriate score. Had this not been the case, I would have experimented more with hyperparameters such as early stopping and 'pruning' on certain model classes.
+This picture shows the dictionaries used to tune the models. The choice of these hyperparameters were due to effectiveness these had on the model. From research I was led to believe these are the 'key' hyperparameters and testing more would just lead to overfitting/ not having an effect at all really. Testing these hyperparameters, I didn't experience any 'mis-fitting issues on my models and all seemed to return an appropriate score. Had this not been the case, I would have experimented more with hyperparameters such as early stopping and 'pruning' on certain model classes.
+
+![2-class](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/0c296451-0f0a-4778-87f8-64cdec49829c)
+This is my first Neural Network class. ALthough basic it demonstrates two hidden layers amongst ReLU activation functions. The widths I used went from 9 features to 27, as this seemed a good staring point being 3x as much. This was then placed down to 18 as a middle point and finally my one output layer. 
+
+![3-train](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/335eb98e-63e5-4897-b0c1-63f56fa375a8)
+My main function is the training function. Although this function was primarily used to train the model, as I progressed I called many other functions inside including my save model and scoring of the models. For the hyperparameter testing, we were told to only use 16 parameters. This led me to choose just using learning rate and momentum as my hyperparameters to choose, with 4 values for each key. After training I saved the model in a folder using an isinstance function to decide if it was an nn.Module or not, with the adjooining hyperparameters and metrics in the same file.
+
+This was called in another function that was used to find the best NN model.
+
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/c353d224-2b5b-48d2-9f95-8db7bdeff834)
+This graph shows all the models being trained in comparison to their loss. It shows a precise similarity between all the models meaning they follow the same trend. This could be due to the limited hyperparameter tuning. In future it would be interesting to see what the comparison is when further tuning is carried out.
+
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/8666eb31-adb3-4be5-af3c-ee7a18443ff0)
+The loss of the best model.
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/ef79fb47-ec74-482a-a7a1-66a4bb48821b)
+The r2 score of the best model on the training set.
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/6abff748-021d-47e6-941b-5ad0877db1e5)
+The diagram of my networks layers.
