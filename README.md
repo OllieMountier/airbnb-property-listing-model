@@ -82,3 +82,15 @@ The loss of the best model.
 The r2 score of the best model on the training set.
 ![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/6abff748-021d-47e6-941b-5ad0877db1e5)
 The diagram of my networks layers.
+
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/f9b3ec2c-e00c-4cad-bdec-159c46e91ca5)
+This image shows the introduction of my new dataset used to test my 3 models. As shown, there was a categorical variable now being used which meant introducing OneHotEncoder into my code so the data could be used on the models without outputting null metrics.
+
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/7a425af4-1c6c-425b-8f7d-515fa17b0f51)
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/f230b7ea-101e-488c-889c-f952d5ffadd4)
+Example predictions for number of beds in a house, for linear regression style model (top), and classification style model (bottom)
+Compared to the prediction output of custom Neural Network (below).
+![image](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/5a8284ef-1ca3-4f8a-a7b8-613ed7ab6449)
+
+![ac vs pred lr](https://github.com/OllieMountier/airbnb-property-listing-model/assets/116648304/a2a4ef69-c8ad-4d9b-a3b8-dfb2e2c1de8e)
+For the regression models, an easy graph to show the quality of it was the actual vs prediction scatter graph. A good quality graph is supposed in look at a 45 degree up slope. Just looking at it I believe mine is a bit lower but follows that trend quite closely.
