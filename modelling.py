@@ -1,34 +1,30 @@
 #%%
-from typing import Any
-from tabular_data import load_airbnb, load_airbnb_cat
-
-from itertools import product
-import numpy as np
-import joblib
-from pathlib import Path
-import json, os
-import yaml
-import torch
-import pandas as pd
+import os
 import time
+import yaml
+import json
+import torch
 import datetime
-
-from torch.utils.data import Dataset, DataLoader, random_split
-from torch.utils.tensorboard import SummaryWriter
-from torch import nn 
-
+import joblib
+import numpy as np
+import pandas as pd
+from torch import nn
+from typing import Any
+from pathlib import Path
+from itertools import product
 import torch.nn.functional as f
-from torchmetrics import Accuracy
-
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import StandardScaler, scale, OneHotEncoder, LabelEncoder
-
-from sklearn.linear_model import SGDRegressor, LogisticRegression
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier,GradientBoostingClassifier
-
-from sklearn.metrics import mean_squared_error, f1_score, precision_score, recall_score, accuracy_score, r2_score
 import matplotlib.pyplot as plt
+from torchmetrics import Accuracy
+from torch.utils.tensorboard import SummaryWriter
+from tabular_data import load_airbnb, load_airbnb_cat
+from torch.utils.data import Dataset, DataLoader, random_split
+from sklearn.linear_model import SGDRegressor, LogisticRegression
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.preprocessing import StandardScaler, scale, OneHotEncoder, LabelEncoder
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, RandomForestClassifier, GradientBoostingClassifier
+from sklearn.metrics import mean_squared_error, f1_score, precision_score, recall_score, accuracy_score, r2_score
+
 
 features_label_tuple = load_airbnb('clean_tabular_data.csv')
 airbnb_df = features_label_tuple[0]
